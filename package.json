@@ -4,6 +4,12 @@
   "main": "index.js",
   "author": "Ahmet Korkmaz",
   "license": "MIT",
+  "engines": {
+    "node" : "14.x"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "axios": "^0.24.0",
     "cors": "^2.8.5",
