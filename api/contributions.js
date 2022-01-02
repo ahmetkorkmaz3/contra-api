@@ -17,16 +17,16 @@ router.get('/', async (req, res) => {
      */
     let contributions = []
 
-    // await githubContributionData(githubUsername).then(data => {
-    //     data.forEach(element => {
-    //         element.contributionDays.forEach(day => {
-    //             contributions.push({
-    //                 date: day.date,
-    //                 count: day.contributionCount
-    //             })
-    //         })
-    //     });
-    // })
+    await githubContributionData(githubUsername).then(data => {
+        data.forEach(element => {
+            element.contributionDays.forEach(day => {
+                contributions.push({
+                    date: day.date,
+                    count: day.contributionCount
+                })
+            })
+        });
+    })
 
     let gitlabData = []
 
@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
     });
 
     res.json({
-        data: gitlabData
+        data: contributions
     }, 200)
 })
 
