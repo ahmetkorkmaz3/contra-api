@@ -1,10 +1,15 @@
 const express = require('express')
 const axios = require('axios')
+const cors = require('cors');
 require('dotenv').config()
 const app = express()
-const port = 3000
+const port = 3001
 
 const { githubContributionData, gitlabContributionData } = require('./requests')
+
+app.use(cors({
+  origin: '*'
+}));
 
 app.get('/contributions', async (req, res) => {
   const githubUsername = req.query.githubUsername
@@ -35,7 +40,7 @@ app.get('/contributions', async (req, res) => {
   let gitlabData = []
 
   await gitlabContributionData(gitlabUsername).then(data => {
-    gitlabData = Object.entries(data).map(([key, value]) => ({date: key, count: value }))
+    gitlabData = Object.entries(data).map(([key, value]) => ({ date: key, count: value }))
   })
 
   contributions.forEach((element, index) => {
