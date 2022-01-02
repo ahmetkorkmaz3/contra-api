@@ -11,6 +11,7 @@ app.get('/contributions', async (req, res) => {
   const gitlabUsername = req.query.gitlabUsername
 
   /**
+   * Example:
    * contributions: [
    *    {
    *       date: '2021-9-22',
