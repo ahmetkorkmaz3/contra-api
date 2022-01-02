@@ -34,16 +34,20 @@ app.get('/contributions', async (req, res) => {
   let gitlabData = []
 
   await gitlabContributionData(gitlabUsername).then(data => {
-    gitlabData = Object.entries(data).map(([key, value]) => ({date: key, count: value}));
-  }).finally(() => {
-    // console.log(gitlabData);
+    gitlabData = Object.entries(data).map(([key, value]) => ({date: key, count: value }))
   })
 
-  res.send({
-    github: 'korkmaz',
-    gitlab: 'ahmet'
-  }, 200)
+  contributions.forEach((element, index) => {
+    const itemIndex = gitlabData.findIndex(item => item.date === element.date)
 
+    if (itemIndex !== -1) {
+      contributions[index].count = contributions[index].count + gitlabData[itemIndex].count
+    }
+  });
+
+  res.json({
+    data: contributions
+  }, 200)
 })
 
 app.listen(port, () => {
