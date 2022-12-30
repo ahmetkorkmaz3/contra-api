@@ -42,8 +42,15 @@ router.get('/', async (req, res) => {
         }
     });
 
+    const totalContributionCount = contributions.reduce((accumulator, contribution) => {
+        return accumulator + contribution.count;
+    }, 0);
+
     res.json({
-        data: contributions
+        data: {
+            totalContributionCount,
+            contributions,
+        }
     }, 200)
 })
 
