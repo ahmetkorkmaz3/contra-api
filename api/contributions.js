@@ -46,12 +46,12 @@ router.get('/', async (req, res) => {
         return accumulator + contribution.count;
     }, 0);
 
-    res.json({
+    res.status(200).json({
         data: {
             totalContributionCount,
             contributions,
         }
-    }, 200)
+    })
 })
 
 module.exports = router
