@@ -1,57 +1,27 @@
 const router = require('express').Router()
 
-const { githubContributionData, gitlabContributionData } = require('../requests')
+const { NotFoundError } = require('../requests')
+const { getMergedContributions, isValidUsername } = require('../lib/contributions')
 
 router.get('/', async (req, res) => {
-    const githubUsername = req.query.githubUsername
-    const gitlabUsername = req.query.gitlabUsername
+    const { githubUsername, gitlabUsername } = req.query
 
-    /**
-     * Example:
-     * contributions: [
-     *    {
-     *       date: '2021-9-22',
-     *       count: 5
-     *    }
-     * ]
-     */
-    let contributions = []
+    if (!isValidUsername(githubUsername) || !isValidUsername(gitlabUsername)) {
+        return res.status(400).json({
+            error: 'githubUsername and gitlabUsername must match ^[A-Za-z0-9._-]{1,100}$',
+        })
+    }
 
-    await githubContributionData(githubUsername).then(data => {
-        data.forEach(element => {
-            element.contributionDays.forEach(day => {
-                contributions.push({
-                    date: day.date,
-                    count: day.contributionCount
-                })
-            })
-        });
-    })
-
-    let gitlabData = []
-
-    await gitlabContributionData(gitlabUsername).then(data => {
-        gitlabData = Object.entries(data).map(([key, value]) => ({ date: key, count: value }))
-    })
-
-    contributions.forEach((element, index) => {
-        const itemIndex = gitlabData.findIndex(item => item.date === element.date)
-
-        if (itemIndex !== -1) {
-            contributions[index].count = contributions[index].count + gitlabData[itemIndex].count
+    try {
+        const data = await getMergedContributions(githubUsername, gitlabUsername)
+        res.status(200).json({ data })
+    } catch (error) {
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message })
         }
-    });
-
-    const totalContributionCount = contributions.reduce((accumulator, contribution) => {
-        return accumulator + contribution.count;
-    }, 0);
-
-    res.status(200).json({
-        data: {
-            totalContributionCount,
-            contributions,
-        }
-    })
+        console.error(error.message)
+        res.status(502).json({ error: 'Could not get the contribution data from GitHub or GitLab' })
+    }
 })
 
 module.exports = router
