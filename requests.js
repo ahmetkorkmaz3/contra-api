@@ -91,7 +91,7 @@ async function gitlabContributionData(username) {
 // Returns { name, avatarUrl } from the public GitHub REST API.
 async function githubProfile(username) {
     try {
-        const response = await http.get(`https://api.github.com/users/${encodeURIComponent(username)}`, {
+        const response = await http.get(`https://api.github.com/users/${encodeURIComponent(username.split(',')[0].trim())}`, {
             headers: process.env.GITHUB_PERSONAL_KEY
                 ? { 'Authorization': `Bearer ${process.env.GITHUB_PERSONAL_KEY}` }
                 : {},

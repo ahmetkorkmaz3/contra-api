@@ -44,7 +44,7 @@ yarn run start
 
 ## Endpoints
 
-All endpoints take `githubUsername` and `gitlabUsername` query parameters. A username must match `^[A-Za-z0-9._-]{1,100}$`.
+All endpoints take `githubUsername` and `gitlabUsername` query parameters. Each takes one username or several comma-separated ones (e.g. `a,b`), and every username must match `^[A-Za-z0-9._-]{1,100}$`. Contributions of all usernames are summed per day.
 
 ### `GET /api/contributions`
 
